@@ -18,6 +18,7 @@ grad = zeros(size(theta));
 %               derivatives of the cost w.r.t. each parameter in theta
 
 [J,grad] = costFunction(theta, X, y);
+
 theta2 = theta(2:end,:); % theta(1) is not regularizated.
 J = J + lambda/(2*m)*(theta2'*theta2);
 grad(2:end) = grad(2:end) + lambda/m*theta2;
