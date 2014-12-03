@@ -85,8 +85,42 @@ J = J + lambda/(2*m)*reg;
 %               first time.
 %
 
-for ex = 1:m
+Delta1 = zeros(size(Theta1));
+Delta2 = zeros(size(Theta2));
+
+y = uint8(y);
+
+for t = 1:m
+    % Feedforward
+    a1 = X(t,:);    % t-th training example: 1*401
+
+    z2 = Theta1*a1';    % 25*1
+    a2 = sigmoid(z2);
+    a2 = a2';   % 1*25
+
+    a2 = [1,a2];    % 1*26
+
+    z3 = Theta2*a2'; % 10*1
+    a3 = sigmoid(z3);
+
+    % error backpropagation
+    target = zeros(num_labels,1);
+    target(y(t)) = 1;    % target for t-th training example.
+
+    delta3 = a3 - target;
+
+    delta2 = Theta2'*delta3;
+    delta2 = delta2(2:end);
+    delta2 = delta2.*sigmoidGradient(z2);
+
+    Delta2 = Delta2 + delta3*a2;
+    Delta1 = Delta1 + delta2*a1;
+
 end
+
+Theta1_grad = 1/m*Delta1;
+Theta2_grad = 1/m*Delta2;
+
 
 
 % Part 3: Implement regularization with the cost function and gradients.
