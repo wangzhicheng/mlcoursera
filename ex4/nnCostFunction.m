@@ -1,4 +1,4 @@
-function [J grad] = nnCostFunction(nn_params, ...
+function [J, grad] = nnCostFunction(nn_params, ...
                                    input_layer_size, ...
                                    hidden_layer_size, ...
                                    num_labels, ...
@@ -27,8 +27,6 @@ m = size(X, 1);
          
 % You need to return the following variables correctly 
 J = 0;
-Theta1_grad = zeros(size(Theta1));
-Theta2_grad = zeros(size(Theta2));
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the code by working through the
@@ -53,7 +51,7 @@ z3 = Theta2*a2';        % output layer input, (num_labels * m)
 a3 = sigmoid(z3);
 a3 = a3';               % output layer output: m * num_labels
 
-[~, p] = max(a3, [], 2); % hypothesis output
+% [~, p] = max(a3, [], 2); % hypothesis output
 
 for cls = 1:num_labels   % for every output neuron
     y_cls = (y==cls);    % for label 'cls', example targets should be.
@@ -90,16 +88,14 @@ Delta2 = zeros(size(Theta2));
 
 y = uint8(y);
 
+a2 = ones(1, hidden_layer_size+1);   % 1*26
 for t = 1:m
     % Feedforward
     a1 = X(t,:);    % t-th training example: 1*401
 
     z2 = Theta1*a1';    % 25*1
-    a2 = sigmoid(z2);
-    a2 = a2';   % 1*25
-
-    a2 = [1,a2];    % 1*26
-
+    a2(2:end) = sigmoid(z2);
+    
     z3 = Theta2*a2'; % 10*1
     a3 = sigmoid(z3);
 
